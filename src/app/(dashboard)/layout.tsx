@@ -34,17 +34,17 @@ export default function DefaultLayout({ children }: LayoutProps) {
 	}, [sidebarOpen]);
 
 	return (
-		<div className="flex h-screen bg-gray-100">
+		<div className="flex h-screen overflow-hidden bg-gray-100">
 			{/* Sidebar */}
-			<aside ref={sidebarRef} className={cn("bg-white transition-all duration-300 ease-in-out flex flex-col", sidebarOpen ? "w-64" : "w-20")}>
+			<aside ref={sidebarRef} className={cn("bg-white transition-all duration-300 ease-in-out flex flex-col h-full", sidebarOpen ? "w-64" : "w-20")}>
 				<div className="flex items-center justify-between p-4">
 					{sidebarOpen && <Image src="https://reqlut2.s3.amazonaws.com/uploads/logos/8f30ce18a7f94558d07c4cf48ba0b5692df65734-5242880.png" alt="Summa Gold Logo" width={120} height={50} />}
 					<Button variant="ghost" size="icon" onClick={toggleSidebar}>
 						{sidebarOpen ? <ChevronLeft /> : <ChevronRight />}
 					</Button>
 				</div>
-				<nav className="space-y-2 p-2 flex-grow">
-					<div className="space-y-2">
+				<nav className="flex-grow overflow-y-auto">
+					<div className="space-y-2 p-2">
 						<h3 className={cn("px-4 text-xs font-semibold text-gray-500 uppercase", !sidebarOpen && "hidden")}>Gestión</h3>
 						<Button variant="ghost" className="w-full justify-start">
 							<ShoppingCart className="mr-2 h-4 w-4" />
@@ -65,7 +65,7 @@ export default function DefaultLayout({ children }: LayoutProps) {
 			</aside>
 
 			{/* Main Content */}
-			<div className="flex-1 flex flex-col overflow-hidden">
+			<div className="flex flex-col flex-grow overflow-hidden">
 				{/* Header */}
 				<header className="bg-[#18293A] shadow-sm z-10 sticky top-0">
 					<div className="flex items-center justify-between p-4">
@@ -128,7 +128,9 @@ export default function DefaultLayout({ children }: LayoutProps) {
 				</header>
 
 				{/* Page Content */}
-				<main className="flex-1 overflow-y-auto p-4">{children}</main>
+				<main className="flex-grow overflow-y-auto">
+					<div className="p-4">{children}</div>
+				</main>
 			</div>
 		</div>
 	);
