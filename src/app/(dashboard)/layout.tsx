@@ -44,22 +44,22 @@ export default function DefaultLayout({ children }: LayoutProps) {
 					</Button>
 				</div>
 				<nav className="flex-grow overflow-y-auto">
-					<div className="space-y-2 p-2">
-						<h3 className={cn("px-4 text-xs font-semibold text-gray-500 uppercase", !sidebarOpen && "hidden")}>Gestión</h3>
+					<div className="space-y-4 p-2">
+						<h3 className={cn("px-4 text-s font-semibold text-gray-500 uppercase", !sidebarOpen && "hidden")}>Gestión</h3>
 						<Button variant="ghost" className="w-full justify-start">
-							<ShoppingCart className="mr-2 h-4 w-4" />
-							<span className={cn(!sidebarOpen && "hidden")}>Solicitudes</span>
+							<ShoppingCart className="mx-1 h-5 w-5" />
+							<span className={cn(!sidebarOpen && "hidden", "pl-3")}>Solicitudes</span>
 						</Button>
 						<Button variant="ghost" className="w-full justify-start">
-							<Users className="mr-2 h-4 w-4" />
-							<span className={cn(!sidebarOpen && "hidden")}>Usuarios</span>
+							<Users className="mx-1 h-5 w-5" />
+							<span className={cn(!sidebarOpen && "hidden", "pl-3")}>Usuarios</span>
 						</Button>
 					</div>
 				</nav>
 				<div className="p-2">
 					<Button variant="ghost" className="w-full justify-start">
 						<Settings className="mr-2 h-4 w-4" />
-						<span className={cn(!sidebarOpen && "hidden")}>Configuración</span>
+						<span className={cn(!sidebarOpen && "hidden", "pl-3")}>Configuración</span>
 					</Button>
 				</div>
 			</aside>
@@ -91,7 +91,7 @@ export default function DefaultLayout({ children }: LayoutProps) {
 									<Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
 										<Avatar>
 											<AvatarImage src="/placeholder-user.jpg" alt="Usuario" />
-											<AvatarFallback>U</AvatarFallback>
+											<AvatarFallback>LO</AvatarFallback>
 										</Avatar>
 									</Button>
 								</PopoverTrigger>
@@ -100,11 +100,11 @@ export default function DefaultLayout({ children }: LayoutProps) {
 										<div className="flex items-center space-x-4">
 											<Avatar>
 												<AvatarImage src="/placeholder-user.jpg" alt="Usuario" />
-												<AvatarFallback>U</AvatarFallback>
+												<AvatarFallback>LO</AvatarFallback>
 											</Avatar>
 											<div>
-												<h4 className="text-sm font-semibold">Juan Pérez</h4>
-												<p className="text-sm text-gray-500">juan.perez@ejemplo.com</p>
+												<h4 className="text-sm font-semibold">Lennin Ortiz</h4>
+												<p className="text-sm text-gray-500">lortiz@summagold.com</p>
 											</div>
 										</div>
 										<DropdownMenuSeparator />

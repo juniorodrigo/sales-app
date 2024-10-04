@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 
 const predefinedStates = ["Aprobado", "Cancelado", "En proceso de compra", "Pendiente de aprobación", "Entregado", "Rechazado"];
 
@@ -21,9 +22,9 @@ interface StateHistoryItem {
 
 export default function SolicitudDetailPage() {
 	const [isLineDetailsOpen, setIsLineDetailsOpen] = useState(true);
-	const [isStatesOpen, setIsStatesOpen] = useState(true);
 	const [currentState, setCurrentState] = useState("Aprobada");
-	const [customState, setCustomState] = useState("");
+	const [isCustomState, setIsCustomState] = useState(false);
+	const [newState, setNewState] = useState("");
 	const [stateDescription, setStateDescription] = useState("");
 	const [stateHistory, setStateHistory] = useState<StateHistoryItem[]>([
 		{ state: "Creada", description: "Solicitud creada en el sistema", date: "01/10/24 09:00" },
@@ -32,33 +33,27 @@ export default function SolicitudDetailPage() {
 	]);
 
 	const toggleLineDetails = () => setIsLineDetailsOpen(!isLineDetailsOpen);
-	const toggleStates = () => setIsStatesOpen(!isStatesOpen);
-
-	const handleStateChange = (newState: string) => {
-		if (newState === "custom") return;
-		setCurrentState(newState);
-	};
 
 	const handleStateSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		const newState = customState.trim() || currentState;
-		if (newState) {
-			updateState(newState, stateDescription);
-			setCustomState("");
+		const stateToUpdate = isCustomState ? newState : currentState;
+		if (stateToUpdate) {
+			updateState(stateToUpdate, stateDescription);
+			setNewState("");
 			setStateDescription("");
 		}
 	};
 
-	const updateState = (newState: string, description: string) => {
-		setCurrentState(newState);
-		setStateHistory((prev) => [...prev, { state: newState, description, date: new Date().toLocaleString() }]);
+	const updateState = (state: string, description: string) => {
+		setCurrentState(state);
+		setStateHistory((prev) => [{ state, description, date: new Date().toLocaleString() }, ...prev]);
 	};
 
 	return (
-		<div className="flex flex-col h-full overflow-auto bg-gray-100 p-4">
-			<Card className="w-full mb-4">
-				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-					<CardTitle className="text-2xl font-bold">Solicitud: 522934</CardTitle>
+		<div className="min-h-screen bg-gray-100 p-4 space-y-6">
+			<Card className="w-full">
+				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
+					<CardTitle className="text-3xl font-bold">Solicitud: 522934</CardTitle>
 					<Button variant="outline">Lista</Button>
 				</CardHeader>
 				<CardContent>
@@ -92,7 +87,7 @@ export default function SolicitudDetailPage() {
 						</div>
 						<div className="col-span-full">
 							<p className="text-sm font-medium text-gray-500">Descripción</p>
-							<p>Lapicero de metal grabado con "Summa Gold Corporation" y "GPTW". Debe incluir estuche.</p>
+							<p>Lapicero de metal grabado con &quot;Summa Gold Corporation&quot; y &quot;GPTW&quot;. Debe incluir estuche.</p>
 						</div>
 						<div>
 							<p className="text-sm font-medium text-gray-500">Justificación</p>
@@ -139,7 +134,7 @@ export default function SolicitudDetailPage() {
 								<TableRow>
 									<TableCell>1</TableCell>
 									<TableCell>-</TableCell>
-									<TableCell>Lapicero de metal grabado con "Summa Gold Corporation" y "GPTW". Debe incluir estuche.</TableCell>
+									<TableCell>Lapicero de metal grabado con &quot;Summa Gold Corporation&quot; y &quot;GPTW&quot;. Debe incluir estuche.</TableCell>
 									<TableCell>370</TableCell>
 									<TableCell>UND</TableCell>
 									<TableCell>3,885.00</TableCell>
@@ -229,27 +224,37 @@ export default function SolicitudDetailPage() {
 							</div>
 						</div>
 					)}
+				</CardContent>
+			</Card>
 
-					<Separator className="my-6" />
-
-					<div className="flex items-center justify-between mb-4">
-						<h2 className="text-xl font-semibold">Estados</h2>
-						<Button variant="ghost" onClick={toggleStates}>
-							{isStatesOpen ? <ChevronUp /> : <ChevronDown />}
-						</Button>
-					</div>
-
-					{isStatesOpen && (
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<Card className="w-full">
+				<CardHeader>
+					<CardTitle className="text-2xl font-bold">Gestión de Estados</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+						<div className="space-y-4">
 							<div>
 								<h3 className="text-lg font-medium mb-2">Estado actual</h3>
-								<p className="text-2xl font-bold text-blue-600 mb-4">{currentState}</p>
-								<h3 className="text-lg font-medium mb-2">Actualizar estado</h3>
-								<form onSubmit={handleStateSubmit} className="space-y-4">
-									<div>
-										<Label htmlFor="state-select">Seleccionar estado</Label>
-										<Select onValueChange={handleStateChange}>
-											<SelectTrigger id="state-select" className="w-full">
+								<p className="text-2xl font-bold text-blue-600">{currentState}</p>
+							</div>
+							<div className="space-y-4">
+								<div className="flex items-center justify-between">
+									<Label htmlFor="custom-state-toggle" className="text-sm font-medium">
+										Estado personalizado
+									</Label>
+									<Switch id="custom-state-toggle" checked={isCustomState} onCheckedChange={setIsCustomState} />
+								</div>
+								{isCustomState ? (
+									<div className="space-y-2">
+										<Label htmlFor="custom-state">Nuevo estado personalizado</Label>
+										<Input id="custom-state" value={newState} onChange={(e) => setNewState(e.target.value)} placeholder="Ingrese estado personalizado" />
+									</div>
+								) : (
+									<div className="space-y-2">
+										<Label htmlFor="predefined-state">Seleccionar nuevo estado</Label>
+										<Select onValueChange={setCurrentState} value={currentState}>
+											<SelectTrigger id="predefined-state">
 												<SelectValue placeholder="Seleccionar nuevo estado" />
 											</SelectTrigger>
 											<SelectContent>
@@ -258,39 +263,34 @@ export default function SolicitudDetailPage() {
 														{state}
 													</SelectItem>
 												))}
-												<SelectItem value="custom">Estado personalizado</SelectItem>
 											</SelectContent>
 										</Select>
 									</div>
-									{currentState === "custom" && (
-										<div>
-											<Label htmlFor="custom-state">Estado personalizado</Label>
-											<Input id="custom-state" value={customState} onChange={(e) => setCustomState(e.target.value)} placeholder="Ingrese estado personalizado" />
-										</div>
-									)}
-									<div>
-										<Label htmlFor="state-description">Descripción del estado</Label>
-										<Textarea id="state-description" value={stateDescription} onChange={(e) => setStateDescription(e.target.value)} placeholder="Ingrese una descripción para el nuevo estado" rows={3} />
-									</div>
-									<Button type="submit">Actualizar Estado</Button>
-								</form>
-							</div>
-							<div>
-								<h3 className="text-lg font-medium mb-2">Historial de estados</h3>
-								<ul className="space-y-4">
-									{stateHistory.map((item, index) => (
-										<li key={index} className="border-b pb-2">
-											<div className="flex justify-between items-center">
-												<span className="font-semibold">{item.state}</span>
-												<span className="text-sm text-gray-500">{item.date}</span>
-											</div>
-											<p className="text-sm text-gray-600 mt-1">{item.description}</p>
-										</li>
-									))}
-								</ul>
+								)}
+								<div className="space-y-2">
+									<Label htmlFor="state-description">Descripción del estado</Label>
+									<Textarea id="state-description" value={stateDescription} onChange={(e) => setStateDescription(e.target.value)} placeholder="Ingrese una descripción para el nuevo estado" rows={3} />
+								</div>
+								<Button onClick={handleStateSubmit} className="w-full">
+									Actualizar Estado
+								</Button>
 							</div>
 						</div>
-					)}
+						<div>
+							<h3 className="text-lg font-medium mb-4">Historial de estados</h3>
+							<ul className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+								{stateHistory.map((item, index) => (
+									<li key={index} className="bg-gray-50 rounded-lg p-3 shadow-sm">
+										<div className="flex justify-between items-center mb-1">
+											<span className="font-semibold text-blue-600">{item.state}</span>
+											<span className="text-sm text-gray-500">{item.date}</span>
+										</div>
+										<p className="text-sm text-gray-600">{item.description}</p>
+									</li>
+								))}
+							</ul>
+						</div>
+					</div>
 				</CardContent>
 			</Card>
 		</div>
